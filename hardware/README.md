@@ -1,11 +1,12 @@
 # Hardware
 
-The Autodesk Fusion project **Presence sensor** holds the source designs. Exports are kept here so they are version controlled and usable without Fusion (see `AGENTS.md`, Hardware).
+The Autodesk Fusion project **Presence sensor** holds the mechanical source designs; Fusion exports are kept here so they are version controlled and usable without Fusion. The main PCB is a KiCad project in this folder (see `AGENTS.md`, Hardware).
 
 | Path | Contents |
 |------|----------|
 | `fusion/` | Fusion source exports (`.f3d`; `.f3z` for designs with inserted, referenced components) |
-| `pcb/` | Fabrication outputs for the main PCB (once finalized) |
+| `kicad/` | KiCad 10 project for the main PCB: schematic, board, project symbol/footprint library and build scripts |
+| `pcb/` | Fabrication outputs for the main PCB: Gerber + drill zip, BOM, JLCPCB assembly files |
 | `enclosure/` | Print outputs for the case (once finalized) |
 
 ## Designs
@@ -20,7 +21,7 @@ The Autodesk Fusion project **Presence sensor** holds the source designs. Export
 
 ## Changing dimensions
 
-The dimensions you're likely to change are named user parameters, and most others are derived from them or from the component models. In Fusion, open `presence-skeleton` and go to **Modify → Change Parameters**. Edit the value in the *User Parameters* section, and everything that depends on it updates. Parameters ending in `_Ref` come from the component models; change those in the component design instead. The PCB and case designs derive from the skeleton, so changes made there flow through to them.
+The dimensions you're likely to change are named user parameters, and most others are derived from them or from the component models. In Fusion, open `presence-skeleton` and go to **Modify → Change Parameters**. Edit the value in the *User Parameters* section, and everything that depends on it updates. Parameters ending in `_Ref` come from the component models; change those in the component design instead. The case derives from the skeleton, so changes made there flow through to it. The KiCad PCB takes its outline, holes and part positions from the same values (in `kicad/scripts/build_board.py`), so update the script and rebuild the board after changing a layout parameter.
 
 Values most people will want to check before printing are **bold**.
 
@@ -110,3 +111,48 @@ The XIAO's included flexible antenna sticks flat to the inside of the right-hand
 | `ant_path_slack` | 15.8 mm | Spare cable. **Must stay ≥ 0**; adjust `ant_drop` if it goes negative |
 
 At these values the case is about 59.5 × 75.5 × 21.3 mm (W × H × D).
+
+## Main PCB
+
+KiCad project `kicad/presence-pcb.kicad_pro`; two layers, 53.5 × 57.955 mm, 1.6 mm. The outline, the four M2.5 holes, the radar sockets and the XIAO position come from `presence-skeleton` (radar centre = origin, PCB front facing the room). Every part is on the front; the back carries only through-hole pins and a GND pour.
+
+### Rebuilding
+
+```sh
+cd hardware/kicad
+kicad-cli sch export netlist --format kicadsexpr -o /tmp/presence.net presence-pcb.kicad_sch
+"/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3" \
+  scripts/build_board.py /tmp/presence.net      # placement, routing, pours, silkscreen
+scripts/export_fab.sh                           # ERC + DRC + parity, then hardware/pcb/*
+```
+
+`build_board.py` routes with its own small grid router, so the board is reproducible from the schematic without an autorouter. The custom footprints in `presence.pretty` come from `scripts/gen_footprints.py`.
+
+### Wiring
+
+Nets are named after XIAO pins. These match `firmware/boards/xiao-esp32s3.yaml`.
+
+| Net | XIAO pin | Goes to |
+|-----|----------|---------|
+| `D8` | D8 (TX) | LD2460 J1 pin 8, Rx2 |
+| `D9` | D9 (RX) | LD2460 J1 pin 7, Tx2 |
+| `D4` | D4 (SDA) | Qwiic J3 pin 3, J4 pin 3 |
+| `D5` | D5 (SCL) | Qwiic J3 pin 4, J4 pin 4 |
+| `5V` | 5V (VBUS) | Radar filter, Qwiic LDO, hardwired input diode |
+| `RADAR_5V` | – | LD2460 JP103 pin 1, after FB1 + 22 µF + 100 nF |
+| `QWIIC_3V3` | – | Qwiic J3/J4 pin 2, from the AP2112K LDO U2 |
+| `GND` | GND | LD2460 pins 2 and 6, Qwiic pin 1 |
+| `D0` `D1` `D3` `D6` `D7` `D10` | spare | Test pads TP1–TP6 (through-hole, wire-solderable). D2 is left unconnected: GPIO3 is an S3 strapping pin |
+
+LD2460 pin numbers follow manual V1.1, Fig. 3. The PCB faces the module's component side, so the socket footprints are mirrored relative to that photo: on the PCB, JP103 pin 1 (5 V) is the bottom pin of the column nearest the board edge, and J1 pin 5 is the bottom pin of the inner column. **Check the first board against a module before powering it.**
+
+### Parts
+
+`pcb/presence-pcb-bom.csv` lists every part. `pcb/presence-pcb-bom-jlcpcb.csv` and `pcb/presence-pcb-cpl-jlcpcb.csv` are for JLCPCB assembly: they include the SMD parts, the radar sockets and the Qwiic socket, and leave out the XIAO (hand-soldered) and the DNP parts. Check the part rotations in JLCPCB's placement preview before ordering.
+
+- **XIAO (U1):** solder it flush (castellated edges onto the pads) or on pin headers. The footprint uses the 14 edge pins only; there is no copper on the front under the XIAO's bottom pads.
+- **Radar sockets (J1, J2):** 2.0 mm female, 4.3 mm tall (`pcb_socket_h`). The radar plugs in with its antennas facing out.
+- **Qwiic (J3):** JST SH SM04B-SRSS-TB, opening toward the left edge (hinge side). J4 is the same bus on 2.54 mm pads for a soldered cable or header. Both are fed 3.3 V by a dedicated AP2112K-3.3 LDO (U2), separate from the XIAO's 3V3.
+- **I²C pull-ups (R1, R2, DNP):** the Adafruit breakouts have their own. Fit 4.7 kΩ only for a breakout without pull-ups.
+- **Hardwired 5 V (J5, DNP):** 2-pin 2.54 mm pads at the bottom edge for bare 5 V wires, feeding VBUS through an SS34 Schottky (D1). The XIAO's 5V pin is wired straight to its USB VBUS (XIAO ESP32S3 schematic v1.4), so D1 stops USB from back-feeding the hardwired supply, but not the reverse: a hardwired supply more than about 0.3 V above USB VBUS would feed the USB host. Unplug the hardwired supply before connecting USB to a computer.
+- **Antenna side:** no copper pour within 5.5 mm of the right edge, next to the antenna on the side wall.

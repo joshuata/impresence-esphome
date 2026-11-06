@@ -29,7 +29,8 @@ An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-
 | 1 | Custom PCB | See [`hardware/pcb`](hardware/pcb) |
 | 1 | 3D-printed enclosure | See [`hardware/enclosure`](hardware/enclosure) |
 | 1 | USB-C cable + 5 V power supply | |
-| TBD | Headers, passives, fasteners | Full list in the PCB BOM export |
+| 1 | PCB parts (radar sockets, Qwiic socket, LDO, passives) | Full list in [`hardware/pcb/presence-pcb-bom.csv`](hardware/pcb/presence-pcb-bom.csv) |
+| 4 | M2.5 screws + heat-set inserts | Length TBD with the case |
 
 ### Optional add-ons
 
