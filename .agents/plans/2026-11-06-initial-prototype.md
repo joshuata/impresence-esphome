@@ -149,7 +149,7 @@ Done. The radar and XIAO are derived from their models (favourite parameters com
 
 ## Process (each step)
 
-- Every sketch fully constrained, every dimension a named parameter, flex-tested.
+- Sketches fully constrained; named parameters for values someone may change or that other designs use; everything else derived where reasonable (AGENTS.md, Modelling style); flex-tested.
 - Before each commit: export the changed Fusion designs to `hardware/fusion/` (`.f3d`; `.f3z` only for designs with inserted references). Export fabrication files once a part is finalized.
 - `hk run check --all`, a feature branch and one PR per step.
 

@@ -4,7 +4,7 @@
 
 ## Goal
 
-Design the main PCB and the 3D-printed wall-mount enclosure in Autodesk Fusion. Everything is parametric and fully constrained: every sketch is fully constrained, and every dimension comes from a named user parameter or a reference to other geometry, with no bare numbers.
+Design the main PCB and the 3D-printed wall-mount enclosure in Autodesk Fusion. Sketches are fully constrained. Values that matter are named parameters, and others are derived where reasonable (see AGENTS.md, Modelling style).
 
 ## Decisions
 

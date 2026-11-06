@@ -20,7 +20,7 @@ The Autodesk Fusion project **Presence sensor** holds the source designs. Export
 
 ## Changing dimensions
 
-Every dimension is a named user parameter. In Fusion, open `presence-skeleton` and go to **Modify → Change Parameters**. Edit the value in the *User Parameters* section, and everything that depends on it updates. Parameters ending in `_Ref` come from the component models; change those in the component design instead. The PCB and case designs derive from the skeleton, so changes made there flow through to them.
+The dimensions you're likely to change are named user parameters, and most others are derived from them or from the component models. In Fusion, open `presence-skeleton` and go to **Modify → Change Parameters**. Edit the value in the *User Parameters* section, and everything that depends on it updates. Parameters ending in `_Ref` come from the component models; change those in the component design instead. The PCB and case designs derive from the skeleton, so changes made there flow through to them.
 
 Values most people will want to check before printing are **bold**.
 
