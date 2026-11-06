@@ -58,11 +58,13 @@ The XIAO ESP32-S3 is the only supported board. Don't mention other boards in the
 ### Hardware (Fusion)
 
 - The Fusion project **Presence sensor** is the source of truth, but it lives in Autodesk's cloud, so it is also version-controlled here:
-  - **Source exports:** after any major change to a Fusion design, and always before committing to git, export every changed design to `hardware/fusion/`. Use `.f3d`, or `.f3z` for designs that reference other designs. Commit them together with the related repo changes. Keep file names identical to the Fusion design names (e.g. `ld2460 Board.f3d`, `xiao-esp32s3.f3d`).
+  - **Source exports:** after any major change to a Fusion design, and always before committing to git, export every changed design to `hardware/fusion/`. Use `.f3d`; Fusion only offers `.f3z` for designs that contain referenced (inserted) components, and bundles those references so the assembly re-imports intact. Designs that only *derive* from others (like `presence-skeleton`) export as `.f3d`; the derive links point to the cloud project, so always export the source designs alongside them. Commit them together with the related repo changes. Keep file names identical to the Fusion design names (e.g. `ld2460 Board.f3d`, `xiao-esp32s3.f3d`).
   - **Fabrication exports:** when a part that gets produced (the case, the wedge, any PCB) is finalized, also export it in a standard format that can be used without Fusion:
     - **Printed parts:** 3MF in `hardware/enclosure/`. Embed the important print settings if the export path supports it (e.g. a PrusaSlicer/OrcaSlicer project 3MF with material, layer height, walls, infill, supports and orientation). Otherwise list the settings in the README next to the file. Also export STEP for people who want to modify the part.
     - **PCBs:** a Gerber + drill zip in `hardware/pcb/` that can be uploaded directly to a PCB manufacturer, plus BOM and pick-and-place (CPL) files for factory assembly.
   - Regenerate fabrication exports whenever a finalized design changes, in the same commit as its source export. Note the design version and export date in the commit message.
+- `hardware/README.md` has a table of every `presence-skeleton` user parameter with its current value. Update it in the same commit whenever parameters are added, removed or change value.
+- Component models expose their user parameters as favourites. Designs that need them derive them (they appear with a `_Ref` suffix) instead of redefining the values.
 - Large binaries (`.f3d`, `.f3z`, `.3mf`, `.step`, Gerber zips) are stored with Git LFS. Check that `.gitattributes` covers a new file type before committing one.
 - Pin assignments in the PCB must match `firmware/` substitutions. When changing either, update both and the README wiring table.
 
