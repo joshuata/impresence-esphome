@@ -13,7 +13,7 @@ PARTS = {  # ref: (MPN, Manufacturer, LCSC, dnp, in_bom)
     "C4": ("CL21A106KAYNNNE", "Samsung", "C15850", False, True),
     "C5": ("CL21A226MAQNNNE", "Samsung", "C45783", False, True),
     "U2": ("AP2112K-3.3TRG1", "Diodes Inc.", "C51118", False, True),
-    "J3": ("SM04B-SRSS-TB(LF)(SN)", "JST", "C160404", False, True),
+    "J3": ("BM04B-SRSS-TB(LF)(SN)", "JST", "C160390", False, True),
     "D1": ("SS34", "MDD", "C8678", False, True),
     "R1": ("0805W8F4701T5E", "UNI-ROYAL", "C17673", True, True),
     "R2": ("0805W8F4701T5E", "UNI-ROYAL", "C17673", True, True),
