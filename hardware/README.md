@@ -17,7 +17,8 @@ The Autodesk Fusion project **Presence sensor** holds the mechanical source desi
 | `xiao-esp32s3` | Seeed XIAO ESP32-S3: board, pin holes, USB-C, keep-out |
 | `adafruit-scd40` | Adafruit SCD-40 breakout (for later case variants) |
 | `adafruit-veml7700` | Adafruit VEML7700 breakout (for later case variants) |
-| `presence-skeleton` | Master layout for the radar + PCB prototype. Derives the radar and XIAO models and holds every case, PCB, mount and antenna dimension |
+| `presence-skeleton` | Master layout for the radar + PCB prototype. Derives the radar and XIAO models and holds every case, PCB, mount and antenna dimension. All user parameters are Favourites so other designs can derive them |
+| `presence-enclosure` | Case v1: base and press-fit cover. Derives the skeleton's parameters (`_Ref`), layout sketches and reference bodies |
 
 ## Changing dimensions
 
@@ -71,6 +72,8 @@ The back has two keyholes on the vertical centreline. Any accessory, such as a w
 | `mount_slot_len` | 8 mm | Slot length above each entry hole |
 
 ### Hinge
+
+Not used by case v1 (press-fit cover); kept in the skeleton for later variants.
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
@@ -156,3 +159,56 @@ LD2460 pin numbers follow manual V1.1, Fig. 3. The PCB faces the module's compon
 - **I²C pull-ups (R1, R2, DNP):** the Adafruit breakouts have their own. Fit 4.7 kΩ only for a breakout without pull-ups.
 - **Hardwired 5 V (J5, DNP):** 2-pin 2.54 mm pads at the bottom edge for bare 5 V wires, feeding VBUS through an SS34 Schottky (D1). The XIAO's 5V pin is wired straight to its USB VBUS (XIAO ESP32S3 schematic v1.4), so D1 stops USB from back-feeding the hardwired supply, but not the reverse: a hardwired supply more than about 0.3 V above USB VBUS would feed the USB host. Unplug the hardwired supply before connecting USB to a computer.
 - **Antenna side:** no copper pour within 5.5 mm of the right edge, next to the antenna on the side wall.
+
+## Case v1 (`presence-enclosure`)
+
+A plain box in two printed parts:
+
+- **Base:** back wall, four side walls, M2.5 heat-set insert bosses for the PCB, two keyholes with head pockets (mount interface above), the antenna pocket on the inside of the right wall, and a U-bend guide post for the antenna cable below it.
+- **Cover:** the flat radome (`case_radome_t`), with a lip that drops inside the base. The left and right lips are a press fit (`case_press_fit`) with a lead-in chamfer; the top and bottom lips only locate. The right lip stops below the antenna so it never presses on it. Pry the cover off at the seam.
+- **Edges:** a small 45° chamfer (`case_edge_chamfer`) on the front and back outer edges; nothing else sticks out.
+- **Cable exits:** four options, each switched on or off with a parameter (1/0). Disabled cutters are moved out of the part, so the timeline stays healthy either way.
+
+| Exit | Parameter | Default | What it is |
+|------|-----------|---------|------------|
+| Bottom | `exit_bottom` | 1 | Opening for a straight USB-C plug body (`usb_plug_w` × `usb_plug_h` + clearance) through the bottom wall, in line with the XIAO's USB-C |
+| Left / right | `exit_left`, `exit_right` | 0 | U-slot for the cable (`usb_cable_d`) from the wall top, at the bay floor; the cover closes it. Strain-relief ribs pinch the cable by `exit_grip` |
+| Back | `exit_back` | 0 | Hole for the cable (`usb_cable_d`) through the back wall into the wall cavity, with strain-relief ribs. Thread the far end through first |
+
+Enclosure parameters (in `presence-enclosure`, **Modify → Change Parameters**):
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| **`case_press_fit`** | 0.1 mm | Interference per side between the cover's side lips and the base walls. Tune for your printer; 0 = slip fit |
+| `case_lip_h` | 2 mm | Cover lip height into the base |
+| `case_lip_t` | 1.2 mm | Cover lip thickness |
+| `case_edge_chamfer` | 0.8 mm | Chamfer on the front and back outer edges. Must stay below `case_radome_t` |
+| `mount_hood_roof` | 1 mm | Roof over each keyhole head pocket. Above ~1.2 mm it reaches the through-hole pins behind the PCB |
+| `ant_cable_d` | 1.13 mm | U.FL pigtail coax diameter (sizes the U-bend guide post); measure yours |
+| `exit_grip` | 0.4 mm | How much the strain-relief ribs pinch the cable |
+| `exit_bottom`, `exit_left`, `exit_right`, `exit_back` | 1, 0, 0, 0 | Cable exit toggles (see above) |
+| `case_back_z`, `case_front_z`, `case_outer_half_w` | 9.9, 11.4, 29.75 mm | Derived; don't edit |
+
+### Printing
+
+`enclosure/presence-enclosure.3mf` is an OrcaSlicer project with both parts in print orientation: the base on its back, the cover radome-down. Neither needs supports (the keyhole pocket roofs and the bottom exit opening are short bridges; the edge chamfers are 45°). The embedded settings:
+
+| Setting | Value |
+|---------|-------|
+| Printer profile | Bambu Lab A1 0.4 nozzle (any 0.4 mm printer works; switch it in the slicer and keep the process) |
+| Material | PLA (Generic PLA). PETG also works; check radar range through the radome |
+| Layer height | 0.2 mm (first layer 0.2 mm) |
+| Walls | 3 |
+| Top / bottom layers | 5 / 4 |
+| Infill | 20 % gyroid |
+| Supports | Off |
+| Brim | Off |
+
+`enclosure/presence-enclosure.step` holds both parts assembled (cover closed) for anyone who wants to modify them.
+
+### Assembly
+
+1. Press M2.5 heat-set inserts into the four bosses.
+2. Stick the antenna into its pocket, run the cable down around the guide post and back up to the XIAO's U.FL.
+3. Screw the PCB onto the inserts, plug in the cable and route it out of the enabled exit.
+4. Press the cover on.
