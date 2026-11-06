@@ -1,6 +1,6 @@
 # Roadmap to the initial prototype (radar + main PCB)
 
-**Status:** in progress. Steps 1–2 and 5 done. Step 3 (firmware v0) is done on branch `worktree-firmware-v0` (ESPHome 2026.11.0b2), not yet merged.
+**Status:** in progress. Steps 1–2 and 5 (case v1) done; step 4 (PCB, KiCad) done on branch `claude/pcb-v1-57190b`. Step 3 (firmware v0) is done on branch `worktree-firmware-v0` (ESPHome 2026.11.0b2), not yet merged.
 
 Detailed reference data (LD2460, pins, power, mount interface, breakouts) lives in `2026-11-06-pcb-and-enclosure-layout.md`.
 
@@ -93,20 +93,23 @@ Done. The radar and XIAO are derived from their models (favourite parameters com
   - External U.FL antenna selection in the board package, if the board needs it
 - Take keys from the ESPHome docs for the targeted version. `esphome config` and `esphome compile` must pass.
 
-### 4. Main PCB v0: Fusion Electronics `presence-pcb`
+### 4. Main PCB v0: KiCad `hardware/kicad/presence-pcb` ✅
+
+Done in KiCad 10 (not Fusion Electronics). Outline, holes and part positions are taken from `presence-skeleton` (read only). Details, wiring and part notes: `hardware/README.md`, Main PCB.
 
 - **Schematic:**
-  - XIAO on the front side, edge pins only
-  - 2×2 and 2×4 2.0 mm female sockets for the LD2460
-  - LC filter + bulk capacitor on the radar's 5 V
-  - Qwiic: a JST-SH socket and 1×4 2.54 mm pads in parallel, fed by a dedicated 3.3 V LDO
-  - Optional **hardwired 5 V input:** 2-pin 2.54 mm pads (or a small screw terminal) at the PCB edge, feeding VBUS through a Schottky diode so USB and hardwired power can't back-feed each other. It lets a case take bare 5 V wires from anywhere, e.g. from behind, without a USB plug. Check Seeed's guidance on powering the XIAO through its 5V pin before finalizing.
-  - Optional unpopulated I²C pull-up pads; test pads for spare pins
+  - [x] XIAO on the front side, edge pins only
+  - [x] 2×2 and 2×4 2.0 mm female sockets for the LD2460 (HCTL PM200, 4.3 mm)
+  - [x] LC filter + bulk capacitor on the radar's 5 V: BLM21PG221 ferrite bead, 22 µF + 100 nF
+  - [x] Qwiic: a JST-SH socket and 1×4 2.54 mm pads in parallel, fed by a dedicated AP2112K-3.3 LDO
+  - [x] Optional **hardwired 5 V input:** 2-pin 2.54 mm pads at the bottom edge, feeding VBUS through an SS34 Schottky. Seeed's schematic (v1.4) wires the XIAO 5V pin straight to USB VBUS, so the diode stops USB back-feeding the hardwired supply but not the reverse; documented as "unplug the hardwired supply before connecting USB to a computer".
+  - [x] Optional unpopulated I²C pull-up pads; through-hole test pads for spare pins D0, D1, D3, D6, D7, D10 (+ GND, 3V3)
 - **Board:**
-  - Outline and M2.5 holes from the skeleton
-  - No copper or parts in front of the radar antennas; ground pour kept away from the antenna zone side
-  - Silkscreen labels with XIAO pin names
-- DRC/ERC clean. Export a Gerber + drill zip, BOM and CPL to `hardware/pcb/`.
+  - [x] Outline and M2.5 holes from the skeleton
+  - [x] No parts in front of the radar antennas; no ground pour along the antenna-zone edge; no front copper under the XIAO
+  - [x] Silkscreen labels with XIAO pin names
+- [x] ERC, DRC and schematic parity clean. Gerber + drill zip, BOM and JLCPCB BOM/CPL in `hardware/pcb/`.
+- [ ] Before ordering: check the LD2460 socket orientation against a real module, and JLCPCB's placement preview for part rotations.
 
 ### 5. Case v1: Fusion `presence-enclosure` ✅
 
@@ -155,7 +158,7 @@ Done, with one change from the original plan: at the user's request the book-sty
 
 - `.agents/plans/2026-11-06-pcb-and-enclosure-layout.md`: now marked as reference.
 - `AGENTS.md`: why `.f3z` is used; the rule to keep the parameter table updated.
-- New: `hardware/README.md`, `firmware/presence.yaml`, an ESPHome entry in `mise.toml`, `hardware/fusion/presence-skeleton.f3d`, `hardware/fusion/presence-enclosure.f3d` (or `.f3z` if it inserts referenced components), `hardware/fusion/presence-pcb.*`, `hardware/pcb/*`, `hardware/enclosure/*`.
+- New: `hardware/README.md`, `firmware/presence.yaml`, an ESPHome entry in `mise.toml`, `hardware/fusion/presence-skeleton.f3d`, `hardware/fusion/presence-enclosure.f3d` (or `.f3z` if it inserts referenced components), `hardware/kicad/*`, `hardware/pcb/*`, `hardware/enclosure/*`.
 
 ## Verification
 

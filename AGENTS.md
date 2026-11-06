@@ -9,7 +9,7 @@ Open-source room presence sensor built on ESPHome.
 - **MCU:** Seeed Studio XIAO ESP32-S3
 - **Core sensor:** Hi-Link HLK-LD2460 24 GHz mmWave presence radar (UART)
 - **Optional add-ons:** STEMMA QT/Qwiic breakouts on one I²C chain: Adafruit VEML7700 (ambient light) and Adafruit SCD-40 (CO₂), or clones with the same layout. No PIR: the radar covers motion.
-- **Hardware design:** Autodesk Fusion (PCB + 3D-printed enclosure)
+- **Hardware design:** KiCad (PCB) and Autodesk Fusion (3D-printed enclosure and the shared `presence-skeleton` layout)
 - **Repository:** <https://github.com/joshuata/impresence-esphome>. Use this URL for `dashboard_import` package URLs, the web installer and any other links back to the project.
 - **Goal:** meet the [Made for ESPHome checklist](https://github.com/esphome/devices.esphome.io/blob/main/.github/made-for-esphome-checklist.md). Treat it as the acceptance criteria; re-read it before changing firmware, docs, or release process.
 
@@ -22,6 +22,7 @@ firmware/            ESPHome configuration
   packages/          One package per optional add-on (light, co2)
 hardware/
   fusion/            Fusion source exports (.f3d/.f3z archives), one per Fusion design
+  kicad/             KiCad project for the main PCB (schematic, board, project library, build scripts)
   pcb/               Fabrication outputs: Gerber/drill zip, BOM, pick-and-place
   enclosure/         Print outputs: 3MF with print settings, plus STEP
 docs/                Images, wiring diagrams, web installer page
@@ -55,15 +56,18 @@ The XIAO ESP32-S3 is the only supported board. Don't mention other boards in the
 - The LD2460 uses ESPHome's native `ld2460` component ([docs](https://next.esphome.io/components/sensor/ld2460/)). It is currently only on the dev channel. Assume it will be in a stable ESPHome release before this project ships, so build against the dev/beta channel during development. Don't add workarounds or an external component for it. Once it ships, set the minimum ESPHome version in the README.
 - Take config keys from the ESPHome docs for the version you are targeting; don't guess them. The same applies to add-on sensor components.
 
-### Hardware (Fusion)
+### Hardware (Fusion and KiCad)
 
 - **Modelling style:** keep sketches fully constrained, and keep designs parametric where it matters. Create named user parameters for values someone is likely to change or that other designs depend on (part sizes from datasheets, clearances, wall thickness, fastener sizes). Use plain sketch dimensions for incidental geometry. Derive values wherever that's reasonable: from another parameter by an expression, from a component model (derived favourite parameters, `_Ref`), or from projected geometry. Don't type in a number that already exists elsewhere.
 - The Fusion project **Presence sensor** is the source of truth, but it lives in Autodesk's cloud, so it is also version-controlled here:
   - **Source exports:** after any major change to a Fusion design, and always before committing to git, export every changed design to `hardware/fusion/`. Use `.f3d`; Fusion only offers `.f3z` for designs that contain referenced (inserted) components, and bundles those references so the assembly re-imports intact. Designs that only *derive* from others (like `presence-skeleton`) export as `.f3d`; the derive links point to the cloud project, so always export the source designs alongside them. Commit them together with the related repo changes. Keep file names identical to the Fusion design names (e.g. `ld2460 Board.f3d`, `xiao-esp32s3.f3d`).
-  - **Fabrication exports:** when a part that gets produced (the case, the wedge, any PCB) is finalized, also export it in a standard format that can be used without Fusion:
+  - **Fabrication exports:** when a printed part (the case, the wedge) is finalized, also export it in a standard format that can be used without Fusion:
     - **Printed parts:** 3MF in `hardware/enclosure/`. Embed the important print settings if the export path supports it (e.g. a PrusaSlicer/OrcaSlicer project 3MF with material, layer height, walls, infill, supports and orientation). Otherwise list the settings in the README next to the file. Also export STEP for people who want to modify the part.
-    - **PCBs:** a Gerber + drill zip in `hardware/pcb/` that can be uploaded directly to a PCB manufacturer, plus BOM and pick-and-place (CPL) files for factory assembly.
   - Regenerate fabrication exports whenever a finalized design changes, in the same commit as its source export. Note the design version and export date in the commit message.
+- **PCB (KiCad):** the main PCB is a KiCad project in `hardware/kicad/` (KiCad 10). It is plain text and committed directly; no export step.
+  - Board outline, mounting holes, component positions and the antenna zone come from `presence-skeleton` (values in `hardware/README.md`). Read the skeleton; never change it from PCB work. If the PCB needs a skeleton change, agree it first, since the case depends on the same values.
+  - `scripts/build_board.py` (run with KiCad's bundled Python) rebuilds the board from the schematic netlist: placement, routing, pours and silkscreen. Edit placement there, not by hand in the board file, so the board stays reproducible. Custom footprints are generated by `scripts/gen_footprints.py`.
+  - Before committing: ERC, DRC and schematic parity must be clean. `scripts/export_fab.sh` runs all three and regenerates the fabrication outputs in `hardware/pcb/`: a Gerber + drill zip that can be uploaded directly to a PCB manufacturer, the full BOM, and JLCPCB assembly BOM + CPL files. Commit the outputs with the source change.
 - `hardware/README.md` has a table of every `presence-skeleton` user parameter with its current value. Update it in the same commit whenever parameters are added, removed or change value.
 - Component models expose their user parameters as favourites. Designs that need them derive them (they appear with a `_Ref` suffix) instead of redefining the values.
 - Large binaries (`.f3d`, `.f3z`, `.3mf`, `.step`, Gerber zips) are stored with Git LFS. Check that `.gitattributes` covers a new file type before committing one.
