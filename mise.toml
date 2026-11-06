@@ -1,6 +1,7 @@
 [tools]
 hk = { version = "latest", workflow = "release.yml" }
 markdownlint-cli2 = "latest"
+poppler = "latest"
 
 [tasks.pre-commit]
 run = "hk run pre-commit"
