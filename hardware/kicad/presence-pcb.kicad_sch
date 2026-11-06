@@ -4400,7 +4400,7 @@
 				)
 			)
 		)
-		(property "Value" "Qwiic (JST SH SM04B-SRSS-TB)"
+		(property "Value" "Qwiic (JST SH BM04B-SRSS-TB, vertical)"
 			(at 130.81 134.62 0)
 			(effects
 				(font
@@ -4409,7 +4409,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "SM04B-SRSS-TB(LF)(SN)"
+		(property "MPN" "BM04B-SRSS-TB(LF)(SN)"
 			(at 129.54 127 0)
 			(effects
 				(font
@@ -4427,7 +4427,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C160404"
+		(property "LCSC" "C160390"
 			(at 129.54 127 0)
 			(effects
 				(font
@@ -4436,7 +4436,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_SH_BM04B-SRSS-TB_1x04-1MP_P1.00mm_Vertical"
 			(at 129.54 127 0)
 			(hide yes)
 			(effects
