@@ -8,8 +8,9 @@ Open-source room presence sensor built on ESPHome.
 
 - **MCU:** Seeed Studio XIAO ESP32-S3
 - **Core sensor:** Hi-Link HLK-LD2460 24 GHz mmWave presence radar (UART)
-- **Optional add-ons:** ambient light sensor, PIR motion sensor, CO₂ sensor
+- **Optional add-ons:** STEMMA QT/Qwiic breakouts on one I²C chain: Adafruit VEML7700 (ambient light) and Adafruit SCD-40 (CO₂), or clones with the same layout. No PIR: the radar covers motion.
 - **Hardware design:** Autodesk Fusion (PCB + 3D-printed enclosure)
+- **Repository:** <https://github.com/joshuata/impresence-esphome>. Use this URL for `dashboard_import` package URLs, the web installer and any other links back to the project.
 - **Goal:** meet the [Made for ESPHome checklist](https://github.com/esphome/devices.esphome.io/blob/main/.github/made-for-esphome-checklist.md). Treat it as the acceptance criteria; re-read it before changing firmware, docs, or release process.
 
 ## Repository layout (target)
@@ -18,10 +19,11 @@ Open-source room presence sensor built on ESPHome.
 firmware/            ESPHome configuration
   presence.yaml      Main device config (what users adopt / flash)
   boards/            Board package: XIAO pin-to-GPIO substitutions and platform settings
-  packages/          One package per optional add-on (light, pir, co2)
+  packages/          One package per optional add-on (light, co2)
 hardware/
-  pcb/               Fusion electronics design + exported Gerbers/BOM/CPL
-  enclosure/         Fusion design + exported STL/3MF/STEP
+  fusion/            Fusion source exports (.f3d/.f3z archives), one per Fusion design
+  pcb/               Fabrication outputs: Gerber/drill zip, BOM, pick-and-place
+  enclosure/         Print outputs: 3MF with print settings, plus STEP
 docs/                Images, wiring diagrams, web installer page
 .agents/plans/       Active implementation plans (see below)
   archived/          Completed plans
@@ -55,8 +57,13 @@ The XIAO ESP32-S3 is the only supported board. Don't mention other boards in the
 
 ### Hardware (Fusion)
 
-- Fusion source files are the source of truth. Commit the native files **and** fabrication exports (Gerbers, drill, BOM, pick-and-place, STL/3MF/STEP) so users without Fusion can build the device.
-- Regenerate exports whenever the source design changes, in the same commit.
+- The Fusion project **Presence sensor** is the source of truth, but it lives in Autodesk's cloud, so it is also version-controlled here:
+  - **Source exports:** after any major change to a Fusion design, and always before committing to git, export every changed design to `hardware/fusion/`. Use `.f3d`, or `.f3z` for designs that reference other designs. Commit them together with the related repo changes. Keep file names identical to the Fusion design names (e.g. `ld2460 Board.f3d`, `xiao-esp32s3.f3d`).
+  - **Fabrication exports:** when a part that gets produced (the case, the wedge, any PCB) is finalized, also export it in a standard format that can be used without Fusion:
+    - **Printed parts:** 3MF in `hardware/enclosure/`. Embed the important print settings if the export path supports it (e.g. a PrusaSlicer/OrcaSlicer project 3MF with material, layer height, walls, infill, supports and orientation). Otherwise list the settings in the README next to the file. Also export STEP for people who want to modify the part.
+    - **PCBs:** a Gerber + drill zip in `hardware/pcb/` that can be uploaded directly to a PCB manufacturer, plus BOM and pick-and-place (CPL) files for factory assembly.
+  - Regenerate fabrication exports whenever a finalized design changes, in the same commit as its source export. Note the design version and export date in the commit message.
+- Large binaries (`.f3d`, `.f3z`, `.3mf`, `.step`, Gerber zips) are stored with Git LFS. Check that `.gitattributes` covers a new file type before committing one.
 - Pin assignments in the PCB must match `firmware/` substitutions. When changing either, update both and the README wiring table.
 
 ### Documentation
@@ -70,6 +77,7 @@ The XIAO ESP32-S3 is the only supported board. Don't mention other boards in the
 - License: firmware, software, and docs are GPL-3.0-or-later (`LICENSE`); everything under `hardware/` is CERN-OHL-S-2.0 (`LICENSE-HARDWARE`). Don't add dependencies or assets with incompatible licenses.
 - Keep changes small and focused; one logical change per commit.
 - Don't fabricate part specs, pinouts, or datasheet values. Cite the datasheet or mark the value `TBD`.
+- Third-party datasheets, drawings and 3D models go in `docs/datasheets/<part>/` and are git-ignored; don't commit them. Record each one's source URL, revision and SHA-256 in `docs/datasheets/README.md`. Read the local copy when it exists.
 
 ## Plans
 

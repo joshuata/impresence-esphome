@@ -1,6 +1,6 @@
 # Presence Sensor
 
-An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-LD2460 mmWave radar and a Seeed Studio XIAO ESP32-S3. The base device detects human presence, even when people are sitting still, and reports it to Home Assistant. Optional add-ons extend it with ambient light, PIR motion, and CO₂ sensing.
+An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-LD2460 mmWave radar and a Seeed Studio XIAO ESP32-S3. The base device detects human presence, even when people are sitting still, and reports it to Home Assistant. Optional add-ons extend it with ambient light and CO₂ sensing.
 
 > **Status:** early development. Hardware and firmware are not yet finalized.
 
@@ -15,7 +15,6 @@ An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-
 - Over-the-air updates
 - Optional add-ons:
   - Ambient light sensor
-  - PIR motion sensor
   - CO₂ sensor
 - Custom PCB and 3D-printable enclosure, with source files included
 
@@ -36,9 +35,8 @@ An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-
 
 | Add-on | Part | Notes |
 |--------|------|-------|
-| Ambient light | TBD | |
-| PIR motion | TBD | |
-| CO₂ | TBD | |
+| Ambient light | Adafruit VEML7700 Lux Sensor, STEMMA QT (5378) | Plugs into the Qwiic chain |
+| CO₂ | Adafruit SCD-40 breakout (5187) | Plugs into the Qwiic chain |
 
 ## Building
 
