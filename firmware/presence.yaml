@@ -1,0 +1,202 @@
+# impresence: room presence sensor (XIAO ESP32-S3 + HLK-LD2460)
+#
+# This is the config users adopt from the ESPHome dashboard. It must work with
+# no add-ons installed; add-ons live in packages/ and are enabled by including them.
+# Pins come only from the board package substitutions.
+
+substitutions:
+  name: impresence
+  friendly_name: Presence Sensor
+  project_version: "0.1.0"
+  # Minimum time between radar position updates sent to Home Assistant.
+  radar_throttle: 1s
+
+packages:
+  board: !include boards/xiao-esp32s3.yaml
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: true
+  project:
+    name: joshuata.impresence
+    version: ${project_version}
+
+dashboard_import:
+  package_import_url: github://joshuata/impresence-esphome/firmware/presence.yaml@main
+  import_full_config: false
+
+logger:
+  id: logger_component
+
+# No key here: the ESPHome dashboard generates one when the device is adopted.
+api:
+  id: api_server
+  encryption: {}
+
+ota:
+  - platform: esphome
+    id: ota_esphome
+
+# No credentials: provisioned via Improv (serial or BLE) or the fallback AP's captive portal.
+wifi:
+  id: wifi_component
+  ap: {}
+
+captive_portal:
+  id: captive_portal_component
+
+improv_serial:
+  id: improv_serial_component
+
+# Renamed from esp32_improv in ESPHome 2026.10.
+improv_ble:
+  id: improv_ble_component
+  authorizer: none
+
+# Bluetooth proxy (e.g. for Bermuda). scan_parameters interval/window stay at their
+# defaults: with Wi-Fi configured, window defaults to interval so BLE listens whenever
+# Wi-Fi is idle (software coexistence), and connection_scan_window drops to 30ms while
+# a proxied GATT connection is open. ESPHome docs advise against tuning these on Wi-Fi.
+esp32_ble_tracker:
+  id: ble_tracker
+  scan_parameters:
+    active: true
+
+bluetooth_proxy:
+  id: ble_proxy
+  active: true
+
+uart:
+  - id: radar_uart
+    tx_pin: ${radar_tx_pin}
+    rx_pin: ${radar_rx_pin}
+    baud_rate: 115200
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+
+ld2460:
+  id: radar
+  uart_id: radar_uart
+
+# The radar reports several frames per second. Position sensors are throttled to
+# ${radar_throttle}, but "unknown" (NaN, target lost) passes through immediately.
+# Target count only publishes on change, so presence reacts without delay.
+sensor:
+  - platform: ld2460
+    ld2460_id: radar
+    target_count:
+      id: radar_target_count
+      name: Target Count
+      filters:
+        - delta: 0
+    target_1:
+      x:
+        id: radar_target_1_x
+        name: Target 1 X
+        filters: &radar_target_filters
+          - throttle_with_priority:
+              timeout: ${radar_throttle}
+              value: [nan]
+      y:
+        id: radar_target_1_y
+        name: Target 1 Y
+        filters: *radar_target_filters
+      distance:
+        id: radar_target_1_distance
+        name: Target 1 Distance
+        disabled_by_default: true
+        filters: *radar_target_filters
+      angle:
+        id: radar_target_1_angle
+        name: Target 1 Angle
+        disabled_by_default: true
+        filters: *radar_target_filters
+    target_2:
+      x:
+        id: radar_target_2_x
+        name: Target 2 X
+        filters: *radar_target_filters
+      y:
+        id: radar_target_2_y
+        name: Target 2 Y
+        filters: *radar_target_filters
+      distance:
+        id: radar_target_2_distance
+        name: Target 2 Distance
+        disabled_by_default: true
+        filters: *radar_target_filters
+      angle:
+        id: radar_target_2_angle
+        name: Target 2 Angle
+        disabled_by_default: true
+        filters: *radar_target_filters
+    target_3:
+      x:
+        id: radar_target_3_x
+        name: Target 3 X
+        filters: *radar_target_filters
+      y:
+        id: radar_target_3_y
+        name: Target 3 Y
+        filters: *radar_target_filters
+      distance:
+        id: radar_target_3_distance
+        name: Target 3 Distance
+        disabled_by_default: true
+        filters: *radar_target_filters
+      angle:
+        id: radar_target_3_angle
+        name: Target 3 Angle
+        disabled_by_default: true
+        filters: *radar_target_filters
+    target_4:
+      x:
+        id: radar_target_4_x
+        name: Target 4 X
+        filters: *radar_target_filters
+      y:
+        id: radar_target_4_y
+        name: Target 4 Y
+        filters: *radar_target_filters
+      distance:
+        id: radar_target_4_distance
+        name: Target 4 Distance
+        disabled_by_default: true
+        filters: *radar_target_filters
+      angle:
+        id: radar_target_4_angle
+        name: Target 4 Angle
+        disabled_by_default: true
+        filters: *radar_target_filters
+    target_5:
+      x:
+        id: radar_target_5_x
+        name: Target 5 X
+        filters: *radar_target_filters
+      y:
+        id: radar_target_5_y
+        name: Target 5 Y
+        filters: *radar_target_filters
+      distance:
+        id: radar_target_5_distance
+        name: Target 5 Distance
+        disabled_by_default: true
+        filters: *radar_target_filters
+      angle:
+        id: radar_target_5_angle
+        name: Target 5 Angle
+        disabled_by_default: true
+        filters: *radar_target_filters
+
+# The ld2460 component has no presence binary sensor; derive it from the target count.
+binary_sensor:
+  - platform: template
+    id: presence
+    name: Presence
+    device_class: occupancy
+    lambda: |-
+      if (!id(radar_target_count).has_state())
+        return {};
+      return id(radar_target_count).state > 0;

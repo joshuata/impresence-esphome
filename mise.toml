@@ -2,6 +2,9 @@
 hk = { version = "latest", workflow = "release.yml" }
 markdownlint-cli2 = "latest"
 poppler = "latest"
+# ESPHome beta: first release line with the native ld2460 component (2026.11).
+# Move to the stable 2026.11.x release once it ships.
+"pipx:esphome" = "2026.11.0b2"
 
 [tasks.pre-commit]
 run = "hk run pre-commit"
