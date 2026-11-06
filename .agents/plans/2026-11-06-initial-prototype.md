@@ -1,6 +1,6 @@
 # Roadmap to the initial prototype (radar + main PCB)
 
-**Status:** in progress. Steps 1–2 done. Step 3 (firmware) is running in a separate session.
+**Status:** in progress. Steps 1–2 done. Step 3 (firmware v0) is done on branch `worktree-firmware-v0` (ESPHome 2026.11.0b2), not yet merged.
 
 Detailed reference data (LD2460, pins, power, mount interface, breakouts) lives in `2026-11-06-pcb-and-enclosure-layout.md`.
 
@@ -146,6 +146,12 @@ Done. The radar and XIAO are derived from their models (favourite parameters com
 - Case variants for the SCD40 and/or VEML7700 breakouts (case posts, vents, light window).
 - The 30° wedge.
 - Web installer and full README.
+- **Release pipeline and OTA updates (when ready for release):**
+  - **Build:** a GitHub Actions workflow on each version tag builds `firmware/presence.yaml` with ESPHome's official build action, or with the reusable workflows ESPHome publishes. It produces the full first-flash image (`factory.bin`), the update image (`ota.bin`) and a manifest.
+  - **Publish:** attach the images to the GitHub Release. Also host the manifest and images on GitHub Pages, so the web installer and devices read one fixed URL.
+  - **Device updates:** add `ota: - platform: http_request` and an `update: - platform: http_request` entity pointing at the Pages manifest, so Home Assistant offers one-click updates for each release.
+  - **Versioning:** the release tag sets `project_version`, so devices report the release they run.
+  - **Before building it:** take the workflow inputs and `http_request` OTA/update keys from the ESPHome docs; this part isn't designed yet. Pin a stable ESPHome release that includes `ld2460` first.
 
 ## Process (each step)
 
