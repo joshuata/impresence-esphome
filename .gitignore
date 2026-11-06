@@ -103,3 +103,11 @@ $RECYCLE.BIN/
 
 # Third-party datasheets, drawings and models: kept locally, not redistributed (see docs/datasheets/README.md)
 docs/datasheets/*/
+
+# KiCad: local UI state, backups and caches
+hardware/kicad/*.kicad_prl
+hardware/kicad/*-backups/
+hardware/kicad/fp-info-cache
+hardware/kicad/_autosave-*
+hardware/kicad/*.lck
+hardware/kicad/.konnect/
