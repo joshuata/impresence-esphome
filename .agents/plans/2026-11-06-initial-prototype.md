@@ -130,6 +130,7 @@ Done, with one change from the original plan: at the user's request the book-sty
 - Test:
   - Presence range through the radome (PLA and PETG)
   - Cover press fit (`case_press_fit`)
+  - Qwiic cable plugged into the vertical J3 (top of plug plus cable bend) clears the radome: 10 mm from the PCB front. JST gives no mated height, so measure it
   - Insert fit
   - USB cable fit in the gap and exit on both sides
   - Hanging on #8 screws
