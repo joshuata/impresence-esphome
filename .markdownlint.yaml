@@ -1,0 +1,12 @@
+# markdownlint config (read by markdownlint-cli2 and editor integrations)
+# Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+default: true
+
+# Prose is written one paragraph per line; don't hard-wrap.
+MD013: false
+
+# Allow inline HTML (e.g. <details>, <img width=...>) in docs.
+MD033: false
+
+# Don't enforce pipe spacing style inside tables.
+MD060: false

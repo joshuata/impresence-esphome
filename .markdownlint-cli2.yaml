@@ -1,0 +1,4 @@
+# markdownlint-cli2 options. Rule settings live in .markdownlint.yaml.
+ignores:
+  # Verbatim license texts; don't reformat them.
+  - "LICENSE*"

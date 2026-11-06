@@ -1,0 +1,23 @@
+amends "package://github.com/jdx/hk/releases/download/v2.11.1/hk@2.11.1#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.11.1/hk@2.11.1#/Builtins.pkl"
+// Using a coding agent? See https://hk.jdx.dev/agents
+
+steps {
+    // Add linters here. Examples:
+    // Builtins.markdown_lint calls `markdownlint` (markdownlint-cli); mise installs
+    // markdownlint-cli2, which has a different binary name and --fix flag.
+    ["markdown-lint"] {
+        glob = List("**/*.md", "**/*.markdown")
+        exclude = List("LICENSE*")
+        check = "markdownlint-cli2 {{ files }}"
+        fix = "markdownlint-cli2 --fix {{ files }}"
+    }
+    // ["eslint"] = Builtins.eslint
+    // ["ruff"] = Builtins.ruff
+
+    // Or define custom steps:
+    // ["custom"] {
+    //     glob = "**/*.py"
+    //     check = "mypy {{ files }}"
+    // }
+}
