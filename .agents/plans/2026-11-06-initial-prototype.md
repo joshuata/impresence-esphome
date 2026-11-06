@@ -1,6 +1,6 @@
 # Roadmap to the initial prototype (radar + main PCB)
 
-**Status:** in progress. Steps 1–2 done. Step 3 (firmware v0) is done on branch `worktree-firmware-v0` (ESPHome 2026.11.0b2), not yet merged.
+**Status:** in progress. Steps 1–2 and 5 done. Step 3 (firmware v0) is done on branch `worktree-firmware-v0` (ESPHome 2026.11.0b2), not yet merged.
 
 Detailed reference data (LD2460, pins, power, mount interface, breakouts) lives in `2026-11-06-pcb-and-enclosure-layout.md`.
 
@@ -108,38 +108,30 @@ Done. The radar and XIAO are derived from their models (favourite parameters com
   - Silkscreen labels with XIAO pin names
 - DRC/ERC clean. Export a Gerber + drill zip, BOM and CPL to `hardware/pcb/`.
 
-### 5. Case v1: Fusion `presence-enclosure` (opens like a book)
+### 5. Case v1: Fusion `presence-enclosure` ✅
 
-- **Right half (base):** holds the PCB, radar, XIAO and antenna.
-  - Back wall with heat-set insert bosses for the PCB
-  - Mount-interface keyholes with head pockets
-  - **Cable exits from the bay:** a separate feature for each option, toggled by a parameter so each case variant enables what it needs. All are slots sized from `usb_cable_d`, with strain-relief ribs.
-    - Bottom (default, straight down)
-    - Left or right side, through a channel along the bottom inside wall
-    - Back, through the back wall into the wall cavity, for hidden in-wall power
-  - Antenna pocket (`ant_len` × `ant_w` + `tol_clearance`, `ant_t` deep) on the outer side wall, plus a U-bend cable guide
-  - Pinhole access to BOOT/RESET if simple
-- **Left half (cover):** the radome, a uniform `case_radome_t` wall that sits `case_radome_gap` in front of the radar when closed. A registration lip locks the gap.
-- **Hinge:**
-  - **Placement:** a knuckle hinge along the shared vertical edge, using `hinge_pin_d`.
-  - **Printing:** both halves print flat side by side, open like an open book, with no supports.
-  - **Closure:** a snap latch on the opposite edge.
-- **Printing:** no supports; clearances from `tol_` parameters.
-- **Exports:**
-  - 3MF with print settings (PrusaSlicer/OrcaSlicer project) plus STEP to `hardware/enclosure/`
-  - `presence-enclosure` and `presence-skeleton` source exports to `hardware/fusion/`
+Done, with one change from the original plan: at the user's request the book-style hinge and snap latch were dropped for a **simple, sleek press-fit cover** (decided 2026-11-06). The `hinge_*` skeleton parameters are unused for now.
+
+- [x] **Base:** back wall with M2.5 heat-set insert bosses; mount-interface keyholes with closed head pockets; antenna pocket (`ant_len` × `ant_w` + `tol_clearance`, `ant_t` deep) on the right inner wall, plus a U-bend guide post (truncated teardrop, prints without support).
+- [x] **Cable exits,** each toggled by a 0/1 parameter (`exit_bottom` default on; `exit_left`, `exit_right`, `exit_back` off). Disabled cutters are moved out of the part, so the timeline stays healthy. Side and back exits are sized from `usb_cable_d` with strain-relief ribs. The bottom exit is sized from `usb_plug_w`/`usb_plug_h` instead: a straight plug is longer than the bay, so its body has to pass through the wall.
+- [x] **Cover:** uniform `case_radome_t` radome at `case_radome_gap` in front of the radar; a lip into the base. The left and right lips press-fit (`case_press_fit`, lead-in chamfer); the right one stops below the antenna.
+- [x] Small 45° chamfer on the front and back outer edges (`case_edge_chamfer`); no other external features.
+- [x] Prints without supports: base on its back, cover radome-down.
+- [x] All sketches fully constrained; flex-tested on every enclosure parameter and exit toggle; no interference with the PCB, radar, XIAO or keep-outs (only the intended press fit between cover and base).
+- [x] Exports: `hardware/enclosure/presence-enclosure.3mf` (OrcaSlicer project with print settings), `presence-enclosure.step`; `hardware/fusion/presence-enclosure.f3d` and `presence-skeleton.f3d` (its user parameters are now Favourites so the enclosure can derive them; no values changed).
+- [ ] Not done: pinholes for BOOT/RESET (the XIAO model has no button positions; would need measured values). Skeleton-parameter flex tests (they need skeleton edits, which are frozen while the PCB is in progress).
 
 ### 6. Build and test
 
 - Order the PCB, print the case, fit the inserts, assemble.
 - Test:
   - Presence range through the radome (PLA and PETG)
-  - Hinge and latch
+  - Cover press fit (`case_press_fit`)
   - Insert fit
   - USB cable fit in the gap and exit on both sides
   - Hanging on #8 screws
   - Wi-Fi RSSI and Bermuda/BLE proxy reception with the case closed, compared with the bare board
-- Tune the `tol_`, `insert_`, radome and hinge values, and update the parameter table.
+- Tune the `tol_`, `insert_`, radome and `case_press_fit` values, and update the parameter table.
 
 ### 7. Later (separate plans)
 
