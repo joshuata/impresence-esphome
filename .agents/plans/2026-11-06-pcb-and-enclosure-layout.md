@@ -1,10 +1,10 @@
 # PCB and enclosure layout
 
-**Status:** draft, awaiting approval
+**Status:** reference. Work is now staged by `2026-11-06-initial-prototype.md` (radar + PCB prototype first). Sections here on breakouts, the wedge and vents apply to later case variants.
 
 ## Goal
 
-Design the main PCB and the 3D-printed wall-mount enclosure in Autodesk Fusion. Everything is parametric and fully constrained: every sketch is fully constrained, and every dimension comes from a named user parameter or a reference to other geometry, with no bare numbers.
+Design the main PCB and the 3D-printed wall-mount enclosure in Autodesk Fusion. Sketches are fully constrained. Values that matter are named parameters, and others are derived where reasonable (see AGENTS.md, Modelling style).
 
 ## Decisions
 
