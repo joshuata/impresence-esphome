@@ -1,6 +1,6 @@
 # PCB and enclosure layout
 
-**Status:** draft, awaiting approval
+**Status:** reference. Work is now staged by `2026-11-06-initial-prototype.md` (radar + PCB prototype first). Sections here on breakouts, the wedge and vents apply to later case variants.
 
 ## Goal
 
