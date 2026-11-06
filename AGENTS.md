@@ -10,6 +10,7 @@ Open-source room presence sensor built on ESPHome.
 - **Core sensor:** Hi-Link HLK-LD2460 24 GHz mmWave presence radar (UART)
 - **Optional add-ons:** STEMMA QT/Qwiic breakouts on one I²C chain: Adafruit VEML7700 (ambient light) and Adafruit SCD-40 (CO₂), or clones with the same layout. No PIR: the radar covers motion.
 - **Hardware design:** Autodesk Fusion (PCB + 3D-printed enclosure)
+- **Repository:** <https://github.com/joshuata/impresence-esphome>. Use this URL for `dashboard_import` package URLs, the web installer and any other links back to the project.
 - **Goal:** meet the [Made for ESPHome checklist](https://github.com/esphome/devices.esphome.io/blob/main/.github/made-for-esphome-checklist.md). Treat it as the acceptance criteria; re-read it before changing firmware, docs, or release process.
 
 ## Repository layout (target)
