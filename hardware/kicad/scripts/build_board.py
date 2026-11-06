@@ -116,8 +116,9 @@ PLACE = {
     "U2": ("centre", -9.0, -31.0, 180),
     "C3": ("pads", {"1": (-5.0, -33.6), "2": (-6.9, -33.6)}),
     "C4": ("pads", {"1": (-12.4, -31.95), "2": (-12.4, -30.05)}),
-    # Qwiic socket on the left edge (opening toward the hinge side), 1x4 pads beside it
-    "J3": ("centre", -23.32, -27.5, 270),
+    # Qwiic socket, top entry (JST BM04B-SRSS-TB), body centre at (-22.8, -27.5),
+    # 3.45 mm in from the PCB edge; 1x4 pads beside it
+    "J3": ("centre", -22.35, -27.5, 90),
     "J4": ("pads", {"1": (-17.6, -21.0), "2": (-17.6, -23.54)}),
     "R1": ("pads", {"1": (-14.6, -20.4), "2": (-14.6, -22.3)}),
     "R2": ("pads", {"1": (-12.6, -20.4), "2": (-12.6, -22.3)}),
