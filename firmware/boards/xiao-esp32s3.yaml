@@ -1,0 +1,24 @@
+# Board package: Seeed Studio XIAO ESP32-S3
+#
+# Shared config refers to pins only through the functional substitutions below.
+# A future board (e.g. XIAO ESP32-C6) gets its own file with the same keys.
+#
+# XIAO pin -> ESP32-S3 GPIO (Seeed XIAO ESP32S3 schematic v1.4):
+#   D0=GPIO1  D1=GPIO2  D2=GPIO3 (strapping, avoid)  D3=GPIO4
+#   D4=GPIO5  D5=GPIO6  D6=GPIO43 (U0TXD)  D7=GPIO44 (U0RXD)
+#   D8=GPIO7  D9=GPIO8  D10=GPIO9
+# Pin assignments must match the PCB (hardware/pcb) and the README wiring table.
+
+substitutions:
+  # I2C bus: SCD40 (0x62) and VEML7700 (0x10)
+  i2c_sda_pin: GPIO5 # XIAO D4
+  i2c_scl_pin: GPIO6 # XIAO D5
+  # LD2460 UART2 (radar data and commands)
+  radar_tx_pin: GPIO7 # XIAO D8 -> LD2460 Rx2 (pin 8)
+  radar_rx_pin: GPIO8 # XIAO D9 <- LD2460 Tx2 (pin 7)
+
+esp32:
+  board: seeed_xiao_esp32s3
+  variant: esp32s3
+  framework:
+    type: esp-idf
