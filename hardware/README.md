@@ -138,7 +138,7 @@ Nets are named after XIAO pins. These match `firmware/boards/xiao-esp32s3.yaml`.
 | `D9` | D9 (RX) | LD2460 J1 pin 7, Tx2 |
 | `D4` | D4 (SDA) | Qwiic J3 pin 3, J4 pin 3 |
 | `D5` | D5 (SCL) | Qwiic J3 pin 4, J4 pin 4 |
-| `5V` | 5V (VBUS) | Radar filter, Qwiic LDO, hardwired input diode |
+| `5V` | 5V (VBUS) | Radar filter, Qwiic LDO. The board is powered only through the XIAO's USB-C |
 | `RADAR_5V` | – | LD2460 JP103 pin 1, after FB1 + 22 µF + 100 nF |
 | `QWIIC_3V3` | – | Qwiic J3/J4 pin 2, from the AP2112K LDO U2 |
 | `GND` | GND | LD2460 pins 2 and 6, Qwiic pin 1 |
@@ -154,5 +154,4 @@ LD2460 pin numbers follow manual V1.1, Fig. 3. The PCB faces the module's compon
 - **Radar sockets (J1, J2):** 2.0 mm female, 4.3 mm tall (`pcb_socket_h`). The radar plugs in with its antennas facing out.
 - **Qwiic (J3):** JST SH BM04B-SRSS-TB, top entry (the cable plugs in from the front), body centre at (-22.8, -27.5) skeleton coordinates, 3.45 mm in from the left PCB edge. The header is 4.25 mm tall and the SHR-04V-S plug housing is 5 mm tall (JST SH catalogue eSH, pp. 2–3); JST gives no mated height, so measure a real cable before finalizing the cover. J4 is the same bus on 2.54 mm pads for a soldered cable or header. Both are fed 3.3 V by a dedicated AP2112K-3.3 LDO (U2), separate from the XIAO's 3V3.
 - **I²C pull-ups (R1, R2, DNP):** the Adafruit breakouts have their own. Fit 4.7 kΩ only for a breakout without pull-ups.
-- **Hardwired 5 V (J5, DNP):** 2-pin 2.54 mm pads at the bottom edge for bare 5 V wires, feeding VBUS through an SS34 Schottky (D1). The XIAO's 5V pin is wired straight to its USB VBUS (XIAO ESP32S3 schematic v1.4), so D1 stops USB from back-feeding the hardwired supply, but not the reverse: a hardwired supply more than about 0.3 V above USB VBUS would feed the USB host. Unplug the hardwired supply before connecting USB to a computer.
 - **Antenna side:** no copper pour within 5.5 mm of the right edge, next to the antenna on the side wall.

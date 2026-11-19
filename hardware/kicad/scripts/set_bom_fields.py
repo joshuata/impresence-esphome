@@ -14,11 +14,9 @@ PARTS = {  # ref: (MPN, Manufacturer, LCSC, dnp, in_bom)
     "C5": ("CL21A226MAQNNNE", "Samsung", "C45783", False, True),
     "U2": ("AP2112K-3.3TRG1", "Diodes Inc.", "C51118", False, True),
     "J3": ("BM04B-SRSS-TB(LF)(SN)", "JST", "C160390", False, True),
-    "D1": ("SS34", "MDD", "C8678", False, True),
     "R1": ("0805W8F4701T5E", "UNI-ROYAL", "C17673", True, True),
     "R2": ("0805W8F4701T5E", "UNI-ROYAL", "C17673", True, True),
     "J4": ("1x4 2.54 mm pin header", "", "", True, True),
-    "J5": ("1x2 2.54 mm pin header or 2-pin 2.54 mm screw terminal", "", "", True, True),
 }
 for i in range(1, 9):
     PARTS[f"TP{i}"] = ("", "", "", False, False)

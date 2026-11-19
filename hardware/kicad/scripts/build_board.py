@@ -108,9 +108,7 @@ PLACE = {
     "H2": ("centre", HOLES[1][0], HOLES[1][1], 0),
     "H3": ("centre", HOLES[2][0], HOLES[2][1], 0),
     "H4": ("centre", HOLES[3][0], HOLES[3][1], 0),
-    # Hardwired 5 V input at the bottom edge, then the Schottky into VBUS.
-    "J5": ("pads", {"1": (-15.0, -37.034), "2": (-17.54, -37.034)}),
-    "D1": ("pads", {"1": (-7.0, -37.034), "2": (-11.0, -37.034)}),
+    # 5 V bulk capacitor at the bottom edge
     "C5": ("pads", {"1": (-3.2, -37.034), "2": (-3.2, -35.134)}),
     # Qwiic LDO
     "U2": ("centre", -9.0, -31.0, 180),
@@ -185,7 +183,7 @@ CLR = 0.2  # copper clearance (board rule)
 MARGIN = 0.08  # extra router margin for grid quantisation
 VIA_D, VIA_DRILL = 0.6, 0.3
 EDGE_CLR = 0.3
-WIDTHS = {"VIN_HW": 0.8, "5V": 0.8, "RADAR_5V": 0.6, "QWIIC_3V3": 0.5, "GND": 0.5}
+WIDTHS = {"5V": 0.8, "RADAR_5V": 0.6, "QWIIC_3V3": 0.5, "GND": 0.5}
 SIG_W = 0.25
 
 X0, Y0 = -PCB_HALF_W, -PCB_BOTTOM
@@ -454,7 +452,7 @@ def main(netlist):
         fp.Value().SetVisible(False)
     for ref in ("TP1", "TP2", "TP3", "TP4", "TP5", "TP6", "TP7", "TP8", "H1", "H2", "H3", "H4"):
         fps[ref].SetAttributes(fps[ref].GetAttributes() | pcbnew.FP_EXCLUDE_FROM_BOM | pcbnew.FP_EXCLUDE_FROM_POS_FILES)
-    for ref in ("R1", "R2", "J4", "J5"):
+    for ref in ("R1", "R2", "J4"):
         fps[ref].SetDNP(True)
 
     # Board outline (skeleton "Layout front", PCB rectangle)
@@ -518,7 +516,7 @@ def main(netlist):
                 out.append({L: r for L in LAYERS if p.IsOnLayer(L)})
         return out
 
-    order = ["VIN_HW", "5V", "RADAR_5V", "QWIIC_3V3", "D8", "D9", "D4", "D5",
+    order = ["5V", "RADAR_5V", "QWIIC_3V3", "D8", "D9", "D4", "D5",
              "D0", "D1", "D3", "D6", "D7", "D10", "3V3"]
     netname = {}
     for full in nets:
@@ -695,9 +693,6 @@ def add_silkscreen(board):
     text(board, "USB-C", 10.0, -39.0, 0.8)
     text(board, "QWIIC 3V3", -23.0, -32.4, 0.8)
     text(board, "GND 3V3 D4 D5", -17.6, -18.6, 0.8)
-    text(board, "+5V", -15.0, -34.6, 0.8)
-    text(board, "GND", -17.54, -34.6, 0.8)
-    text(board, "5V IN", -16.3, -39.0, 0.8)
     for (s, x, y) in (("D0", 24.6, -33.2), ("D1", 21.8, -33.2), ("D3", 24.2, -27.4), ("D6", 24.2, -20.2),
                       ("D7", -3.6, -21.794), ("D10", -3.9, -29.414), ("GND", -3.9, -25.6), ("3V3", -3.9, -31.954)):
         text(board, s, x, y, 0.8)

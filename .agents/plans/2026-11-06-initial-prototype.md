@@ -102,7 +102,7 @@ Done in KiCad 10 (not Fusion Electronics). Outline, holes and part positions are
   - [x] 2×2 and 2×4 2.0 mm female sockets for the LD2460 (HCTL PM200, 4.3 mm)
   - [x] LC filter + bulk capacitor on the radar's 5 V: ferrite bead, 22 µF + 100 nF. The bead started as Murata BLM21PG221SN1D; on 2026-11-19 it became Sunlord GZ2012D101TF (LCSC C1015, 0805, 800 mA, 150 mΩ, 100 Ω at 100 MHz) because that one is in JLCPCB's basic library. It is rated over 3× the radar's ≤250 mA average (LD2460 manual §2.2)
   - [x] Qwiic: a top-entry JST-SH socket (BM04B-SRSS-TB) and 1×4 2.54 mm pads in parallel, fed by a dedicated AP2112K-3.3 LDO
-  - [x] Optional **hardwired 5 V input:** 2-pin 2.54 mm pads at the bottom edge, feeding VBUS through an SS34 Schottky. Seeed's schematic (v1.4) wires the XIAO 5V pin straight to USB VBUS, so the diode stops USB back-feeding the hardwired supply but not the reverse; documented as "unplug the hardwired supply before connecting USB to a computer".
+  - [x] ~~Optional **hardwired 5 V input:** 2-pin 2.54 mm pads at the bottom edge, feeding VBUS through an SS34 Schottky. Seeed's schematic (v1.4) wires the XIAO 5V pin straight to USB VBUS, so the diode stops USB back-feeding the hardwired supply but not the reverse; documented as "unplug the hardwired supply before connecting USB to a computer".~~ Removed 2026-11-19: the board is powered only from the XIAO's USB-C 5 V, so J5 and the SS34 (D1) are gone.
   - [x] Optional unpopulated I²C pull-up pads; through-hole test pads for spare pins D0, D1, D3, D6, D7, D10 (+ GND, 3V3)
 - **Board:**
   - [x] Outline and M2.5 holes from the skeleton
