@@ -1232,7 +1232,7 @@
 				)
 			)
 		)
-		(property "Value" "BLM21PG221SN1D"
+		(property "Value" "GZ2012D101TF"
 			(at 0 1.55 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -1278,7 +1278,7 @@
 				)
 			)
 		)
-		(property "MPN" "BLM21PG221SN1D"
+		(property "MPN" "GZ2012D101TF"
 			(at 0 0 90)
 			(layer "F.SilkS")
 			(hide yes)
@@ -1290,7 +1290,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C85840"
+		(property "LCSC" "C1015"
 			(at 0 0 90)
 			(layer "F.SilkS")
 			(hide yes)
@@ -1302,7 +1302,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Murata"
+		(property "Manufacturer" "Sunlord"
 			(at 0 0 90)
 			(layer "F.SilkS")
 			(hide yes)

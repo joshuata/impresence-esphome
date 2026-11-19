@@ -3,7 +3,7 @@
 "C2","100nF","Capacitor_SMD:C_0805_2012Metric","CC0805KRX7R9BB104","Yageo","C49678","1",""
 "C3,C4","10uF","Capacitor_SMD:C_0805_2012Metric","CL21A106KAYNNNE","Samsung","C15850","2",""
 "D1","SS34","Diode_SMD:D_SMA","SS34","MDD","C8678","1",""
-"FB1","BLM21PG221SN1D","Inductor_SMD:L_0805_2012Metric","BLM21PG221SN1D","Murata","C85840","1",""
+"FB1","GZ2012D101TF","Inductor_SMD:L_0805_2012Metric","GZ2012D101TF","Sunlord","C1015","1",""
 "J1","LD2460 J1 socket 2x4 2.0mm","presence:LD2460_J1_Socket_2x04_P2.00mm","PM200-2-04-Z-4.3","HCTL","C2906072","1",""
 "J2","LD2460 JP103 socket 2x2 2.0mm","presence:LD2460_JP103_Socket_2x02_P2.00mm","PM200-2-02-Z-4.3","HCTL","C2906070","1",""
 "J3","Qwiic (JST SH BM04B-SRSS-TB, vertical)","Connector_JST:JST_SH_BM04B-SRSS-TB_1x04-1MP_P1.00mm_Vertical","BM04B-SRSS-TB(LF)(SN)","JST","C160390","1",""

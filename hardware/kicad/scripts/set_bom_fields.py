@@ -6,7 +6,7 @@ PARTS = {  # ref: (MPN, Manufacturer, LCSC, dnp, in_bom)
     "U1": ("XIAO ESP32S3", "Seeed Studio", "", False, True),
     "J1": ("PM200-2-04-Z-4.3", "HCTL", "C2906072", False, True),
     "J2": ("PM200-2-02-Z-4.3", "HCTL", "C2906070", False, True),
-    "FB1": ("BLM21PG221SN1D", "Murata", "C85840", False, True),
+    "FB1": ("GZ2012D101TF", "Sunlord", "C1015", False, True),
     "C1": ("CL21A226MAQNNNE", "Samsung", "C45783", False, True),
     "C2": ("CC0805KRX7R9BB104", "Yageo", "C49678", False, True),
     "C3": ("CL21A106KAYNNNE", "Samsung", "C15850", False, True),
