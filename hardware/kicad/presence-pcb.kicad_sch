@@ -3868,7 +3868,7 @@
 				)
 			)
 		)
-		(property "Value" "BLM21PG221SN1D"
+		(property "Value" "GZ2012D101TF"
 			(at 121.92 41.91 90)
 			(effects
 				(font
@@ -3876,7 +3876,7 @@
 				)
 			)
 		)
-		(property "MPN" "BLM21PG221SN1D"
+		(property "MPN" "GZ2012D101TF"
 			(at 121.92 45.72 0)
 			(effects
 				(font
@@ -3885,7 +3885,7 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer" "Murata"
+		(property "Manufacturer" "Sunlord"
 			(at 121.92 45.72 0)
 			(effects
 				(font
@@ -3894,7 +3894,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C85840"
+		(property "LCSC" "C1015"
 			(at 121.92 45.72 0)
 			(effects
 				(font
