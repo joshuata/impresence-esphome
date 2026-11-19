@@ -26,10 +26,10 @@ An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-
 |----:|------|-------|
 | 1 | Seeed Studio XIAO ESP32-S3 | |
 | 1 | Hi-Link HLK-LD2460 mmWave radar | |
-| 1 | Custom PCB | See [`hardware/pcb`](hardware/pcb) |
+| 1 | Custom PCB, assembled | Order it with assembly; see [1. PCB](#1-pcb) |
 | 1 | 3D-printed enclosure | See [`hardware/enclosure`](hardware/enclosure) |
 | 1 | USB-C cable + 5 V power supply | |
-| 1 | PCB parts (radar sockets, Qwiic socket, LDO, passives) | Full list in [`hardware/pcb/presence-pcb-bom.csv`](hardware/pcb/presence-pcb-bom.csv) |
+| 1 | PCB parts (radar sockets, Qwiic socket, LDO, passives) | Only if you assemble the PCB yourself. Full list in [`hardware/pcb/presence-pcb-bom.csv`](hardware/pcb/presence-pcb-bom.csv) |
 | 4 | M2.5 screws + heat-set inserts | Length TBD with the case |
 
 ### Optional add-ons
@@ -43,7 +43,60 @@ An open-source, ESPHome-based room presence sensor built around the Hi-Link HLK-
 
 ### 1. PCB
 
-TODO: ordering the PCB from fabrication files, assembly notes, soldering order.
+The fabrication files are in [`hardware/pcb`](hardware/pcb):
+
+| File | What it's for |
+|------|---------------|
+| `presence-pcb-gerbers.zip` | Gerber and drill files. Upload this to any PCB maker |
+| `presence-pcb-bom.csv` | Every part on the board, with manufacturer and LCSC part numbers |
+| `presence-pcb-bom-jlcpcb.csv` | Assembly BOM in JLCPCB's format |
+| `presence-pcb-cpl-jlcpcb.csv` | Pick-and-place (CPL) file in JLCPCB's format |
+
+The board has two layers and is 53.5 × 57.955 mm, 1.6 mm thick. It uses 0.2 mm minimum tracks and clearances and 0.3 mm via drills, which any standard PCB service can make. Every part is on the top side.
+
+#### Ordering from JLCPCB with assembly
+
+JLCPCB can build the board with everything fitted except the XIAO, which you solder yourself. The optional parts (R1, R2, J4, J5) are left off; see [Optional parts](#optional-parts).
+
+1. On [jlcpcb.com](https://jlcpcb.com), start a PCB order and upload `presence-pcb-gerbers.zip`. Check that it detects 2 layers and a size of about 53.5 × 58 mm.
+2. Set the PCB options:
+   - **Base material:** FR-4
+   - **Layers:** 2
+   - **PCB thickness:** 1.6 mm
+   - **Surface finish:** lead-free HASL or ENIG
+   - **Quantity:** however many bare boards you want
+   - Leave the other options at their defaults. Some colours and finishes aren't offered with Economic assembly; the site greys those out.
+3. Turn on **PCB Assembly** and set:
+   - **PCBA type:** Economic
+   - **Assembly side:** Top side
+   - **PCBA quantity:** the number of boards to assemble. The minimum is 2.
+   - **Confirm parts placement:** yes. A JLCPCB engineer checks the part orientations and sends them to you to approve before assembly, for a small fee. It's worth it until the files have been proven on a real order.
+4. Upload `presence-pcb-bom-jlcpcb.csv` as the BOM and `presence-pcb-cpl-jlcpcb.csv` as the CPL (pick-and-place) file.
+5. On the parts page, check that every line matched the LCSC part number in the file. There should be nine lines:
+   - **Basic parts:** C1–C5, D1, FB1
+   - **Extended parts:** U2, J1, J2, J3. Each unique extended part adds a feeder-loading fee.
+   - **J1 and J2:** the radar sockets are through-hole, so JLCPCB solders them by hand and adds a small through-hole fee. To solder them yourself instead, untick them and buy HCTL PM200-2-04-Z-4.3 and PM200-2-02-Z-4.3. Any substitute must be 4.3 mm tall (`pcb_socket_h`), or the radar won't line up with the case.
+   - **Out-of-stock parts:** choose one with the same value, rating and footprint. For J3, use only the JST BM04B-SRSS-TB or an exact equivalent: the case is shaped around its height.
+6. In the placement preview, check that every part sits on its pads and that the polarised parts point the right way:
+   - **D1:** cathode band
+   - **U2:** pin 1
+   - **J3:** the four contacts on the small pads and the mounting tabs on the two large ones
+7. Add the order to your cart and check out. JLCPCB asks for a product description for customs; pick the closest one.
+
+The Gerber zip works with any other PCB maker too. Other assembly services need their own BOM and CPL formats; build them from `presence-pcb-bom.csv`.
+
+#### After the boards arrive
+
+1. **XIAO ESP32-S3 (U1):** solder it flush, with its castellated edges on the pads, or on pin headers. Only the 14 edge pins are used. There's no copper under the XIAO's bottom pads, so don't solder those.
+2. **Check before powering:** before powering the first board, check the radar socket pinout against a module, following [Wiring](hardware/README.md#wiring). In short: JP103 pin 1 (5 V) is the bottom pin of the column nearest the board edge.
+
+#### Optional parts
+
+| Ref | Part | When to fit it |
+|-----|------|----------------|
+| R1, R2 | 4.7 kΩ 0805 resistors (I²C pull-ups) | Only for a Qwiic breakout without its own pull-ups. The Adafruit breakouts have them |
+| J4 | 1×4 2.54 mm header | To solder an I²C cable instead of using the Qwiic socket |
+| J5 | 1×2 2.54 mm header or screw terminal | To power the board from bare 5 V wires. Unplug that supply before connecting USB to a computer; see [Main PCB → Parts](hardware/README.md#parts) |
 
 ### 2. Enclosure
 
