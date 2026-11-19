@@ -7,6 +7,15 @@ preview before ordering.
 """
 import csv, sys
 
+# Degrees added to KiCad's rotation where JLCPCB's model of the LCSC part has a
+# different zero orientation than our footprint. Keyed by footprint name.
+# LD2460 J1 (C2906072): our footprint has the 2x4 long axis along Y; JLCPCB's
+# model has it along X. The socket is symmetric under 180 degrees, so +90 and
+# -90 place it the same way.
+JLCPCB_ROTATION = {
+    "LD2460_J1_Socket_2x04_P2.00mm": 90,
+}
+
 bom_in, pos_in, out = sys.argv[1:4]
 assembled = {}
 rows = []
@@ -27,5 +36,9 @@ with open(pos_in, newline="") as f, open(f"{out}/presence-pcb-cpl-jlcpcb.csv", "
     w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
     for r in csv.DictReader(f):
         if r["Ref"] in assembled:
+            rot = r["Rot"]
+            offset = JLCPCB_ROTATION.get(assembled[r["Ref"]]["Footprint"].split(":")[-1])
+            if offset:
+                rot = f"{(float(rot) + offset) % 360:.6f}"
             w.writerow([r["Ref"], r["PosX"] + "mm", r["PosY"] + "mm",
-                        "Top" if r["Side"] == "top" else "Bottom", r["Rot"]])
+                        "Top" if r["Side"] == "top" else "Bottom", rot])
